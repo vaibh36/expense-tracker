@@ -17,7 +17,6 @@ const ExpenseScreen = ({ navigation }) => {
       <Pressable
         style={styles.plusButton}
         onPress={() => {
-          console.log('Plus button pressed');
           navigation.navigate('New Expense');
         }}
       >
