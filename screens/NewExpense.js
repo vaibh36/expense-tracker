@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 const ExpenseScreen = () => {
   return (
     <View style={styles.container}>
-      <TotalExpenseCard />
+      <Text>This is to create a new expense</Text>
     </View>
   );
 };

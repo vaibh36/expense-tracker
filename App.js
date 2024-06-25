@@ -14,7 +14,7 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Home">
           <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="New Expense" component={NewExpenseScreen} />
+          <Stack.Screen name="New Expense" component={NewExpenseScreen}  options={{ headerShown: true, presentation: 'modal' }} />
           <Stack.Screen name="Expenses" component={ExpenseListing} />
         </Stack.Navigator>
       </NavigationContainer>
