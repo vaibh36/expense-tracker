@@ -36,18 +36,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     width: '80%',
     flexDirection: 'column',
-    
   },
   rowContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
     width: '100%',
-    alignItems: "center",
+    alignItems: 'center',
     gap: 32,
   },
-  text:{
-    fontWeight: "600"
-  }
+  text: {
+    fontWeight: '600',
+  },
 });
 
 export default TotalExpenseCard;
