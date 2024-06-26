@@ -1,12 +1,19 @@
-import React from 'react';
-import { View, Text, Button, StyleSheet, Pressable } from 'react-native';
+import React, { useContext } from 'react';
+import { View, Text, Button, StyleSheet, FlatList } from 'react-native';
 import TotalExpenseCard from '../components/TotalExpenseCard';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { ExpensesContext } from '../context/ExpensesContext';
 
 const ExpenseListing = () => {
+  const { expenses } = useContext(ExpensesContext);
+
+  const renderExpenseItem = (itemData) => {
+    return <TotalExpenseCard {...itemData.item} />;
+  };
+
   return (
     <View style={styles.container}>
-      <TotalExpenseCard />
+      <FlatList data={expenses} renderItem={renderExpenseItem} keyExtractor={(item) => item.id} />
     </View>
   );
 };
@@ -17,6 +24,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'blue',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingRight: 10,
+    paddingLeft: 10,
   },
   plusButton: {
     position: 'absolute',

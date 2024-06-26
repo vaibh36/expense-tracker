@@ -1,5 +1,6 @@
+import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View, SafeAreaView, StatusBar } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
 import HomeScreen from './screens/HomeScreen';
 import { NavigationContainer, getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -7,6 +8,7 @@ import NewExpenseScreen from './screens/NewExpense';
 import ExpenseListing from './screens/ExpenseListing';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import DrawerContent from './components/DrawerContent';
+import ExpensesContextProvider from './context/ExpensesContext';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -46,13 +48,18 @@ const MainStackNavigator = ({ navigation, route }) => {
 };
 export default function App() {
   return (
-    <SafeAreaView style={styles.container}>
-      <NavigationContainer>
-        <Drawer.Navigator drawerContent={(props) => <DrawerContent {...props} />}>
-          <Drawer.Screen name="Track your Expenses" component={MainStackNavigator} />
-        </Drawer.Navigator>
-      </NavigationContainer>
-    </SafeAreaView>
+    <>
+      <StatusBar style="auto" />
+      <ExpensesContextProvider>
+        <SafeAreaView style={styles.container}>
+          <NavigationContainer>
+            <Drawer.Navigator drawerContent={(props) => <DrawerContent {...props} />}>
+              <Drawer.Screen name="Track your Expenses" component={MainStackNavigator} />
+            </Drawer.Navigator>
+          </NavigationContainer>
+        </SafeAreaView>
+      </ExpensesContextProvider>
+    </>
   );
 }
 
