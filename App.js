@@ -35,7 +35,11 @@ const MainStackNavigator = ({ navigation, route }) => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Home" component={HomeScreen} />
-      <Stack.Screen name="New Expense" component={NewExpenseScreen}  options={{ presentation: 'modal' }} />
+      <Stack.Screen
+        name="New Expense"
+        component={NewExpenseScreen}
+        options={{ presentation: 'modal' }}
+      />
       <Stack.Screen name="Expenses" component={ExpenseListing} />
     </Stack.Navigator>
   );
@@ -55,7 +59,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'lightgray',
     justifyContent: 'center',
   },
 });
