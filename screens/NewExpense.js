@@ -14,7 +14,7 @@ const ExpenseScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'lightgray',
+    backgroundColor: 'blue',
     alignItems: 'center',
     justifyContent: 'center',
   },

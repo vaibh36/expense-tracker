@@ -6,14 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 const ExpenseScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <Button
-        onPress={() => {
-          navigation.navigate('Expenses');
-        }}
-        title="View Expenses"
-        color="#841584"
-        accessibilityLabel="Learn more about this purple button"
-      />
+      <Text style={styles.heading}>Enhance your savings with Expense Tracker App</Text>
       <Pressable
         style={styles.plusButton}
         onPress={() => {
@@ -29,7 +22,7 @@ const ExpenseScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'lightgray',
+    backgroundColor: 'blue',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -43,6 +36,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  heading: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 28,
+    textAlign: 'center',
   },
 });
 
