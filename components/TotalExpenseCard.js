@@ -1,19 +1,43 @@
-import React from 'react';
-import { StyleSheet, Text, View, Pressable } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import DeleteExpenseModal from './DeleteExpenseModal';
 import moment from 'moment';
+import ExpenseActionsPopover from './ExpenseActionsPopover';
+import { useNavigation } from '@react-navigation/native';
 
-const TotalExpenseCard = ({ amount, description, date }) => {
-  const [visible, setVisible] = React.useState(false);
+const TotalExpenseCard = ({ amount, description, date, id }) => {
+  const [visible, setVisible] = useState(false);
+  const [selectedItem, setSelectedItem] = useState('');
+  const navigation = useNavigation();
+
+  const handleSelectOption = (option) => {
+    setSelectedItem(id);
+
+    switch (option) {
+      case 'edit': {
+        navigation.navigate('New Expense', {
+          itemId: id,
+        });
+        break;
+      }
+      case 'delete': {
+        setVisible(true);
+      }
+      default: {
+        break;
+      }
+    }
+  };
+
+  const onDeleteModalClose = () => {
+    setVisible(false);
+    setSelectedItem('');
+  };
+
   return (
     <React.Fragment>
-      <Pressable
-        style={styles.container}
-        onPress={() => {
-          setVisible(true);
-        }}
-      >
+      <View style={styles.container}>
         <View style={styles.rowContainer}>
           <View
             style={{
@@ -31,11 +55,13 @@ const TotalExpenseCard = ({ amount, description, date }) => {
           <Text style={styles.text}>{description}</Text>
           <Text>INR {amount}</Text>
         </View>
-      </Pressable>
+        <ExpenseActionsPopover onSelect={handleSelectOption} itemId={id} />
+      </View>
       {visible && (
         <DeleteExpenseModal
+          selectedItem={selectedItem}
           visible={visible}
-          setVisible={setVisible}
+          onClose={onDeleteModalClose}
           message="Do you want to delete this entry ?"
         />
       )}
@@ -48,18 +74,18 @@ const styles = StyleSheet.create({
     minHeight: 50,
     backgroundColor: 'white',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     paddingTop: 10,
     paddingBottom: 10,
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
     width: '100%',
-    flexDirection: 'column',
+    flexDirection: 'row',
     marginTop: 10,
   },
   rowContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '100%',
+    width: '95%',
     alignItems: 'center',
   },
   text: {

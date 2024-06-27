@@ -16,7 +16,8 @@ const validationSchema = yup.object().shape({
   amount: yup.number().required('Amount is required').positive('Amount must be positive'),
 });
 
-const ExpenseForm = () => {
+const ExpenseForm = ({ itemId }) => {
+  const { addExpense, updateExpense, getExpenseById } = useContext(ExpensesContext);
   const navigator = useNavigation();
   const {
     handleChange,
@@ -31,17 +32,21 @@ const ExpenseForm = () => {
     initialValues: { description: '', amount: '', date: new Date() },
     validationSchema,
     onSubmit: (values, { resetForm }) => {
-      addExpense(values);
+      itemId ? updateExpense(itemId, values) : addExpense(values);
       navigator.navigate('Expenses');
     },
   });
-  const { addExpense } = useContext(ExpensesContext);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const focusCallback = React.useCallback(() => {
-    resetForm();
+    if (itemId) {
+      const expense = getExpenseById(itemId);
+      resetForm(expense ? { values: { ...expense } } : null);
+    } else {
+      resetForm();
+    }
 
     return () => {};
-  }, []);
+  }, [itemId]);
 
   useFocusEffect(focusCallback);
 
