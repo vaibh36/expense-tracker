@@ -8,6 +8,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 import { ExpensesContext } from '../context/ExpensesContext';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const validationSchema = yup.object().shape({
   date: yup.date().required('Date is required'),
@@ -59,6 +60,7 @@ const ExpenseForm = () => {
       <Pressable onPress={displayDatePicker}>
         <View style={[styles.dateInput, styles.input]}>
           <Text>{values.date ? moment(values.date).format('DD-MM-YYYY') : 'Select a date'}</Text>
+          <Icon name="calendar" size={20} color="#0969da" />
         </View>
       </Pressable>
       {showDatePicker && (
@@ -85,8 +87,8 @@ const ExpenseForm = () => {
         onChangeText={handleChange('amount')}
         onBlur={handleBlur('amount')}
         value={values.amount}
-        keyboardType="numeric"
         placeholder="Amount"
+        keyboardType="number-pad"
       />
       {touched.amount && errors.amount && <Text style={styles.errorText}>{errors.amount}</Text>}
 
@@ -104,7 +106,9 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   dateInput: {
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   input: {
     height: 40,

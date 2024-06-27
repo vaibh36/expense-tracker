@@ -9,6 +9,7 @@ import ExpenseListing from './screens/ExpenseListing';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import DrawerContent from './components/DrawerContent';
 import ExpensesContextProvider from './context/ExpensesContext';
+import SplashScreen from './screens/SplashScreen';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -35,7 +36,8 @@ const MainStackNavigator = ({ navigation, route }) => {
   }, [navigation, routeName]);
 
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Splash">
+      <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen
         name="New Expense"
