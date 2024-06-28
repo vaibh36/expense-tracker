@@ -7,14 +7,6 @@ const ExpenseScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Enhance your savings with Expense Tracker App</Text>
-      <Pressable
-        style={styles.plusButton}
-        onPress={() => {
-          navigation.navigate('New Expense');
-        }}
-      >
-        <Icon name="plus" size={20} color="black" />
-      </Pressable>
     </View>
   );
 };

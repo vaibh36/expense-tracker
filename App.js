@@ -11,23 +11,36 @@ import DrawerContent from './components/DrawerContent';
 import ExpensesContextProvider from './context/ExpensesContext';
 import SplashScreen from './screens/SplashScreen';
 import { MenuProvider } from 'react-native-popup-menu';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
+const Tab = createBottomTabNavigator();
 
-const getHeaderTitle = (routeName) => {
-  switch (routeName) {
-    case 'Home':
-      return 'Home Screen';
-    case 'New Expense':
-      return 'New Expense';
-    case 'Expenses':
-      return 'Expenses';
-    case '':
-      return '';
-    default:
-      return 'App';
-  }
+const BottomTabNavigator = () => {
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+          if (route.name === 'Home') {
+            iconName = focused ? 'home' : 'home-outline';
+          } else if (route.name === 'Expenses') {
+            iconName = focused ? 'list' : 'list-outline';
+          } else {
+            iconName = 'add';
+          }
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+        headerShown: false,
+      })}
+    >
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Expenses" component={ExpenseListing} />
+      <Tab.Screen name="New Expense" component={NewExpenseScreen} />
+    </Tab.Navigator>
+  );
 };
 
 const MainStackNavigator = ({ navigation, route }) => {
@@ -35,7 +48,7 @@ const MainStackNavigator = ({ navigation, route }) => {
   React.useEffect(() => {
     const showDrawerIcon = routeName !== '';
     navigation.setOptions({
-      title: getHeaderTitle(routeName),
+      title: '',
       headerLeft: showDrawerIcon ? undefined : () => null,
     });
   }, [navigation, routeName]);
@@ -43,13 +56,7 @@ const MainStackNavigator = ({ navigation, route }) => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Splash">
       <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="Home" component={HomeScreen} />
-      <Stack.Screen
-        name="New Expense"
-        component={NewExpenseScreen}
-        options={{ presentation: 'modal' }}
-      />
-      <Stack.Screen name="Expenses" component={ExpenseListing} />
+      <Stack.Screen name="Main" component={BottomTabNavigator} />
     </Stack.Navigator>
   );
 };

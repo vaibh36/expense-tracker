@@ -56,7 +56,6 @@ const ExpenseForm = ({ itemId }) => {
 
   const handleDateChange = (event, date) => {
     setShowDatePicker(false);
-    // console.log({ event, date, showDatePicker });
     setFieldValue('date', date);
   };
 
