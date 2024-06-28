@@ -23,16 +23,20 @@ const getHeaderTitle = (routeName) => {
       return 'New Expense';
     case 'Expenses':
       return 'Expenses';
+    case '':
+      return '';
     default:
       return 'App';
   }
 };
 
 const MainStackNavigator = ({ navigation, route }) => {
-  const routeName = getFocusedRouteNameFromRoute(route) ?? 'Home';
+  const routeName = getFocusedRouteNameFromRoute(route) ?? '';
   React.useEffect(() => {
+    const showDrawerIcon = routeName !== '';
     navigation.setOptions({
       title: getHeaderTitle(routeName),
+      headerLeft: showDrawerIcon ? undefined : () => null,
     });
   }, [navigation, routeName]);
 
