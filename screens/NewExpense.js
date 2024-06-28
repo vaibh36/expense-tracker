@@ -2,10 +2,12 @@ import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import ExpenseForm from '../components/ExpenseForm';
 
-const ExpenseScreen = () => {
+const ExpenseScreen = ({ route }) => {
+  const { itemId } = route.params || {};
+
   return (
     <View style={styles.container}>
-      <ExpenseForm />
+      <ExpenseForm itemId={itemId} />
     </View>
   );
 };

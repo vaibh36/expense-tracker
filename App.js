@@ -10,6 +10,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import DrawerContent from './components/DrawerContent';
 import ExpensesContextProvider from './context/ExpensesContext';
 import SplashScreen from './screens/SplashScreen';
+import { MenuProvider } from 'react-native-popup-menu';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -52,15 +53,17 @@ export default function App() {
   return (
     <>
       <StatusBar style="auto" />
-      <ExpensesContextProvider>
-        <SafeAreaView style={styles.container}>
-          <NavigationContainer>
-            <Drawer.Navigator drawerContent={(props) => <DrawerContent {...props} />}>
-              <Drawer.Screen name="Track your Expenses" component={MainStackNavigator} />
-            </Drawer.Navigator>
-          </NavigationContainer>
-        </SafeAreaView>
-      </ExpensesContextProvider>
+      <MenuProvider>
+        <ExpensesContextProvider>
+          <SafeAreaView style={styles.container}>
+            <NavigationContainer>
+              <Drawer.Navigator drawerContent={(props) => <DrawerContent {...props} />}>
+                <Drawer.Screen name="Track your Expenses" component={MainStackNavigator} />
+              </Drawer.Navigator>
+            </NavigationContainer>
+          </SafeAreaView>
+        </ExpensesContextProvider>
+      </MenuProvider>
     </>
   );
 }

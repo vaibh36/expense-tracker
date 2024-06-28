@@ -1,7 +1,10 @@
 import * as React from 'react';
 import { Alert, Modal, StyleSheet, Text, Pressable, View } from 'react-native';
+import { ExpensesContext } from '../context/ExpensesContext';
 
-const DeleteExpenseModal = ({ visible, setVisible, message }) => {
+const DeleteExpenseModal = ({ visible, onClose, message, selectedItem }) => {
+  const { deleteExpense } = React.useContext(ExpensesContext);
+
   return (
     <View style={styles.centeredView}>
       <Modal animationType="slide" visible={visible}>
@@ -17,7 +20,8 @@ const DeleteExpenseModal = ({ visible, setVisible, message }) => {
               <Pressable
                 style={[styles.button, styles.buttonClose]}
                 onPress={() => {
-                  setVisible(false);
+                  deleteExpense(selectedItem);
+                  onClose();
                 }}
               >
                 <Text style={styles.textStyle}>Yes</Text>
@@ -25,7 +29,7 @@ const DeleteExpenseModal = ({ visible, setVisible, message }) => {
               <Pressable
                 style={[styles.button, styles.buttonClose]}
                 onPress={() => {
-                  setVisible(false);
+                  onClose();
                 }}
               >
                 <Text style={styles.textStyle}>No</Text>
