@@ -13,6 +13,7 @@ import SplashScreen from './screens/SplashScreen';
 import { MenuProvider } from 'react-native-popup-menu';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import SignupScreen from './screens/SignupScreen';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -46,7 +47,7 @@ const BottomTabNavigator = () => {
 const MainStackNavigator = ({ navigation, route }) => {
   const routeName = getFocusedRouteNameFromRoute(route) ?? '';
   React.useEffect(() => {
-    const showDrawerIcon = routeName !== '';
+    const showDrawerIcon = routeName !== '' && routeName !== 'Signup';
     navigation.setOptions({
       title: '',
       headerLeft: showDrawerIcon ? undefined : () => null,
@@ -56,6 +57,7 @@ const MainStackNavigator = ({ navigation, route }) => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Splash">
       <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Signup" component={SignupScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Main" component={BottomTabNavigator} />
     </Stack.Navigator>
   );
