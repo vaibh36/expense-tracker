@@ -14,6 +14,7 @@ import { MenuProvider } from 'react-native-popup-menu';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SignupScreen from './screens/SignupScreen';
+import AuthContextProvider from './context/AuthContext';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -67,15 +68,17 @@ export default function App() {
     <>
       <StatusBar style="auto" />
       <MenuProvider>
-        <ExpensesContextProvider>
-          <SafeAreaView style={styles.container}>
-            <NavigationContainer>
-              <Drawer.Navigator drawerContent={(props) => <DrawerContent {...props} />}>
-                <Drawer.Screen name="Track your Expenses" component={MainStackNavigator} />
-              </Drawer.Navigator>
-            </NavigationContainer>
-          </SafeAreaView>
-        </ExpensesContextProvider>
+        <AuthContextProvider>
+          <ExpensesContextProvider>
+            <SafeAreaView style={styles.container}>
+              <NavigationContainer>
+                <Drawer.Navigator drawerContent={(props) => <DrawerContent {...props} />}>
+                  <Drawer.Screen name="Track your Expenses" component={MainStackNavigator} />
+                </Drawer.Navigator>
+              </NavigationContainer>
+            </SafeAreaView>
+          </ExpensesContextProvider>
+        </AuthContextProvider>
       </MenuProvider>
     </>
   );
