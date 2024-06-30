@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet, Pressable } from 'react-native';
-import TotalExpenseCard from '../components/TotalExpenseCard';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { View, Text, StyleSheet } from 'react-native';
 
-const ExpenseScreen = ({ navigation }) => {
+
+const HomeScreen = ({ navigation }) => {
+
+
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Enhance your savings with Expense Tracker App</Text>
@@ -37,4 +38,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ExpenseScreen;
+export default HomeScreen;

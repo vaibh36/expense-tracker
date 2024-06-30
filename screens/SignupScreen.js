@@ -7,11 +7,13 @@ import { Formik } from 'formik';
 import useSignupFormValidation from '../components/useSignupFormValidation';
 import { ActivityIndicator, MD2Colors } from 'react-native-paper';
 import { createUser } from '../utils/auth';
+import { AuthContext } from '../context/AuthContext';
 
 const SignupScreen = ({ navigation }) => {
   const { validationSchema } = useSignupFormValidation();
   const [isLoading, setIsLoading] = React.useState(false);
   const [isError, setIsError] = React.useState(false);
+  const { saveUserDetails } = React.useContext(AuthContext);
 
   return (
     <Formik
@@ -24,8 +26,9 @@ const SignupScreen = ({ navigation }) => {
         try {
           setIsLoading(true);
           setIsError(false);
-          await createUser(values?.email, values?.password);
-          setIsLoading(true);
+          const user = await createUser(values?.email, values?.password);
+          setIsLoading(false);
+          saveUserDetails(user);
           navigation.navigate('Main');
         } catch (e) {
           setIsLoading(false);
