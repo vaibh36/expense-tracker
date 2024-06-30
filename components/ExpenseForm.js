@@ -118,13 +118,13 @@ const styles = StyleSheet.create({
     height: 40,
     borderColor: '#BEBEBE',
     borderWidth: 1,
-    marginBottom: 10,
+    marginBottom: 2,
     paddingHorizontal: 10,
   },
   errorText: {
     fontSize: 12,
     color: 'red',
-    marginBottom: 5,
+    marginBottom: 10,
   },
 });
 
