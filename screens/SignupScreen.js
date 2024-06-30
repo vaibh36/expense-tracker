@@ -1,13 +1,17 @@
 // Import necessary modules
-import React, { useState } from 'react';
+import React from 'react';
 import { View } from 'react-native';
 import { TextInput, Button, Text } from 'react-native-paper';
-import { Formik, Form } from 'formik';
-import * as Yup from 'yup';
+import { Formik } from 'formik';
+
 import useSignupFormValidation from '../components/useSignupFormValidation';
+import { ActivityIndicator, MD2Colors } from 'react-native-paper';
+import { createUser } from '../utils/auth';
 
 const SignupScreen = ({ navigation }) => {
   const { validationSchema } = useSignupFormValidation();
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [isError, setIsError] = React.useState(false);
 
   return (
     <Formik
@@ -16,13 +20,20 @@ const SignupScreen = ({ navigation }) => {
         password: '',
       }}
       validationSchema={validationSchema}
-      onSubmit={(values) => {
-        console.log('I am called:-', values);
-        navigation.navigate('Main');
+      onSubmit={async (values) => {
+        try {
+          setIsLoading(true);
+          setIsError(false);
+          await createUser(values?.email, values?.password);
+          setIsLoading(true);
+          navigation.navigate('Main');
+        } catch (e) {
+          setIsLoading(false);
+          setIsError(true);
+        }
       }}
     >
       {({ handleChange, handleSubmit, values, errors }) => {
-
         return (
           <View
             style={{
@@ -32,68 +43,86 @@ const SignupScreen = ({ navigation }) => {
               gap: 10,
             }}
           >
-            <Text
-              style={{
-                textAlign: 'center',
-                fontSize: 24,
-                marginBottom: 20,
-                fontWeight: 'bold',
-              }}
-            >
-              Create Account to save more
-            </Text>
-
-            <TextInput
-              name="email"
-              value={values?.email}
-              onChangeText={handleChange('email')}
-              placeholder="Email"
-              keyboardType="email-address"
-              autoCapitalize="none"
-              style={{
-                backgroundColor: 'white',
-              }}
-            />
-            {errors?.email && (
-              <Text
-                style={{
-                  color: 'red',
-                  fontWeight: 'bold',
-                }}
-              >
-                {errors?.email}
-              </Text>
+            {isLoading && (
+              <ActivityIndicator animating={true} color={MD2Colors.blue300} size={'large'} />
             )}
-            <TextInput
-              value={values?.password}
-              onChangeText={handleChange('password')}
-              name="password"
-              placeholder="Password"
-              secureTextEntry
-              style={{
-                backgroundColor: 'white',
-              }}
-            />
-            {errors?.password && (
-              <Text
-                style={{
-                  color: 'red',
-                  fontWeight: 'bold',
-                }}
-              >
-                {errors?.password}
-              </Text>
-            )}
+            {!isLoading && (
+              <>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    fontSize: 24,
+                    marginBottom: 20,
+                    fontWeight: 'bold',
+                  }}
+                >
+                  Create Account to save more
+                </Text>
 
-            <Button
-              mode="contained"
-              style={{
-                backgroundColor: 'blue',
-              }}
-              onPress={handleSubmit}
-            >
-              Signup
-            </Button>
+                <TextInput
+                  name="email"
+                  value={values?.email}
+                  onChangeText={handleChange('email')}
+                  placeholder="Email"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  style={{
+                    backgroundColor: 'white',
+                  }}
+                />
+                {errors?.email && (
+                  <Text
+                    style={{
+                      color: 'red',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    {errors?.email}
+                  </Text>
+                )}
+                <TextInput
+                  value={values?.password}
+                  onChangeText={handleChange('password')}
+                  name="password"
+                  placeholder="Password"
+                  secureTextEntry
+                  style={{
+                    backgroundColor: 'white',
+                  }}
+                />
+                {errors?.password && (
+                  <Text
+                    style={{
+                      color: 'red',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    {errors?.password}
+                  </Text>
+                )}
+
+                <Button
+                  mode="contained"
+                  style={{
+                    backgroundColor: 'blue',
+                  }}
+                  onPress={handleSubmit}
+                >
+                  Signup
+                </Button>
+                {isError && (
+                  <Text
+                    style={{
+                      color: 'red',
+                      fontWeight: 'bold',
+                      textAlign: 'center',
+                    }}
+                  >
+                    Something went wrong.
+                  </Text>
+                )}
+              </>
+            )}
           </View>
         );
       }}
