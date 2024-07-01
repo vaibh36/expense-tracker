@@ -8,18 +8,19 @@ export const AuthContext = createContext({
   saveUserDetails: () => {},
   isAuthenticated: false,
   userDetails: {},
-  signOut: () =>{}
+  signOut: () => {},
 });
 
 function authReducer(state, action) {
   switch (action.type) {
     case 'CREATE_USER':
+    case 'SIGN_IN_USER':
       return {
         ...state,
         isAuthenticated: true,
         userDetails: action.payload,
       };
-      case 'SIGN_OUT':
+    case 'SIGN_OUT':
       return {
         ...state,
         isAuthenticated: false,
@@ -37,16 +38,21 @@ function AuthContextProvider({ children }) {
     dispatch({ type: 'CREATE_USER', payload: user });
   }
 
-   function signOut() {
-    console.log('I am being called')
-    dispatch({ type: 'SIGN_OUT'});
+  function signInUser(user) {
+    dispatch({ type: 'SIGN_IN_USER', payload: user });
+  }
+
+  function signOut() {
+    console.log('I am being called');
+    dispatch({ type: 'SIGN_OUT' });
   }
 
   const value = {
     userDetails: authState?.userDetails,
     isAuthenticated: authState?.isAuthenticated,
     saveUserDetails: saveUserDetails,
-    signOut: signOut
+    signInUser: signInUser,
+    signOut: signOut,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

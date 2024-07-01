@@ -52,7 +52,7 @@ const TotalExpenseCard = ({ amount, description, date, id }) => {
             <Icon name="apple" size={20} color="#900" />
           </View>
           <Text style={styles.text}>{moment(date).format('DD-MM-YYYY')}</Text>
-          <Text style={styles.text}>{description}</Text>
+          <Text style={[styles.text, styles.description]}>{description}</Text>
           <Text>INR {amount}</Text>
         </View>
         <ExpenseActionsPopover onSelect={handleSelectOption} itemId={id} />
@@ -84,14 +84,17 @@ const styles = StyleSheet.create({
   },
   rowContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     width: '95%',
     alignItems: 'center',
+    gap: 5,
   },
   text: {
     fontWeight: '600',
     width: '25%',
     flexWrap: 'wrap',
+  },
+  description: {
+    width: '40%',
   },
 });
 
