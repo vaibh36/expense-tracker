@@ -34,7 +34,7 @@ const ExpenseListing = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'blue',
+    backgroundColor: '#307ecc',
     alignItems: 'center',
     justifyContent: 'center',
     paddingRight: 10,
