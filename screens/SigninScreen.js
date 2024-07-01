@@ -1,68 +1,23 @@
 // Import necessary modules
 import React from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import { View } from 'react-native';
 import { TextInput, Button, Text, Divider } from 'react-native-paper';
 import { Formik } from 'formik';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import useSignupFormValidation from '../hooks/useSignupFormValidation';
+import useSigninFormValidation from '../hooks/useSigninFormValidation';
 import { ActivityIndicator, MD2Colors } from 'react-native-paper';
-import { createUser } from '../utils/auth';
+import { signIn } from '../utils/auth';
+import { AuthContext } from '../context/AuthContext';
 
-const SignupScreen = ({ navigation }) => {
-  const { validationSchema } = useSignupFormValidation();
+const SigninScreen = ({ navigation }) => {
+  const { validationSchema } = useSigninFormValidation();
   const [isLoading, setIsLoading] = React.useState(false);
   const [isError, setIsError] = React.useState(false);
-  const [isRegistrationSuccess, setIsRegistrationSuccess] = React.useState(false);
+  const { signInUser } = React.useContext(AuthContext);
 
-  const gotToSignInScreen = () => {
-    navigation.navigate('Signin');
+  gotToSignUpScreen = () => {
+    navigation.navigate('Signup');
   };
-
-  if (isRegistrationSuccess) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: '#307ecc',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <Ionicons name="checkmark-circle" size={150} color="#7DE24E" />
-        <Text
-          style={{
-            color: 'white',
-            textAlign: 'center',
-            fontSize: 18,
-            padding: 30,
-          }}
-        >
-          Registration Successful
-        </Text>
-        <TouchableOpacity
-          style={{
-            backgroundColor: '#7DE24E',
-            borderWidth: 0,
-            color: '#FFFFFF',
-            borderColor: '#7DE24E',
-            height: 40,
-            width: 200,
-            alignItems: 'center',
-            borderRadius: 30,
-            marginLeft: 35,
-            marginRight: 35,
-            marginTop: 20,
-            marginBottom: 20,
-          }}
-          activeOpacity={0.5}
-          onPress={gotToSignInScreen}
-        >
-          <Text style={{ color: '#FFFFFF', paddingVertical: 10, fontSize: 16 }}>Login Now</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
 
   return (
     <Formik
@@ -75,9 +30,10 @@ const SignupScreen = ({ navigation }) => {
         try {
           setIsLoading(true);
           setIsError(false);
-          const user = await createUser(values?.email, values?.password);
+          const user = await signIn(values?.email, values?.password);
           setIsLoading(false);
-          setIsRegistrationSuccess(true);
+          signInUser(user);
+          navigation.navigate('Main');
         } catch (e) {
           setIsLoading(false);
           setIsError(true);
@@ -107,9 +63,8 @@ const SignupScreen = ({ navigation }) => {
                     fontWeight: 'bold',
                   }}
                 >
-                  Create Account to save more
+                  Login to Account to track and view your Expenses
                 </Text>
-
                 <TextInput
                   name="email"
                   value={values?.email}
@@ -151,7 +106,6 @@ const SignupScreen = ({ navigation }) => {
                     {errors?.password}
                   </Text>
                 )}
-
                 <Button
                   mode="contained"
                   style={{
@@ -159,7 +113,7 @@ const SignupScreen = ({ navigation }) => {
                   }}
                   onPress={handleSubmit}
                 >
-                  Signup
+                  Sign in
                 </Button>
                 {isError && (
                   <Text
@@ -169,7 +123,7 @@ const SignupScreen = ({ navigation }) => {
                       textAlign: 'center',
                     }}
                   >
-                    Something went wrong.
+                    Something went wrong. Please check if entered email and password is correct.
                   </Text>
                 )}
                 <Divider />
@@ -178,9 +132,9 @@ const SignupScreen = ({ navigation }) => {
                   style={{
                     backgroundColor: '#42b72a',
                   }}
-                  onPress={gotToSignInScreen}
+                  onPress={gotToSignUpScreen}
                 >
-                  Sign In
+                  Create new account
                 </Button>
               </>
             )}
@@ -191,4 +145,4 @@ const SignupScreen = ({ navigation }) => {
   );
 };
 
-export default SignupScreen;
+export default SigninScreen;
