@@ -1,4 +1,6 @@
-import React, { createContext, useReducer } from 'react';
+import React, { createContext, useEffect, useReducer, useContext } from 'react';
+import { fetchDataFromFirestore } from '../utils/expenses';
+import { AuthContext } from './AuthContext';
 
 const DUMMY_EXPENSES = [
   {
@@ -38,6 +40,16 @@ function expensesReducer(state, action) {
 
 function ExpensesContextProvider({ children }) {
   const [expensesState, dispatch] = useReducer(expensesReducer, DUMMY_EXPENSES);
+  const { isAuthenticated } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      const fetchData = async () => {
+        const response = await fetchDataFromFirestore();
+      };
+      fetchData();
+    }
+  }, [isAuthenticated]);
 
   function addExpense(expenseData) {
     dispatch({ type: 'ADD', payload: expenseData });

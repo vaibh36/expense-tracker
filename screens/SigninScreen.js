@@ -35,6 +35,7 @@ const SigninScreen = ({ navigation }) => {
           signInUser(user);
           navigation.navigate('Main');
         } catch (e) {
+          console.log(e);
           setIsLoading(false);
           setIsError(true);
         }
