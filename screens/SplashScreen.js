@@ -1,12 +1,22 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { View, Image, StyleSheet } from 'react-native';
+import { AuthContext } from '../context/AuthContext';
 
 const SplashScreen = ({ navigation }) => {
+  const { isAuthenticated } = useContext(AuthContext);
+  const timeout = useRef();
+
   useEffect(() => {
-    setTimeout(() => {
-      navigation.replace('Signin');
-    }, 3000);
-  }, []);
+    if (!timeout.current) {
+      timeout.current = setTimeout(() => {
+        navigation.replace(isAuthenticated ? 'Main' : 'Signin');
+      }, 3000);
+    }
+
+    () => {
+      timeout.current && clearTimeout(timeout.current);
+    };
+  }, [isAuthenticated]);
 
   return (
     <View style={styles.container}>

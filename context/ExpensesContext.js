@@ -1,15 +1,12 @@
 import React, { createContext, useEffect, useReducer, useContext } from 'react';
-import { fetchDataFromFirestore } from '../utils/expenses';
+import {
+  fetchDataFromFirestore,
+  addExpenseToFirestore,
+  updateExpenseToFirestore,
+  deleteExpenseToFirestore,
+} from '../utils/expenses';
 import { AuthContext } from './AuthContext';
 
-const DUMMY_EXPENSES = [
-  {
-    description: 'Foods and Drinks',
-    date: new Date('22-06-2024'),
-    amount: '300',
-    id: '12345',
-  },
-];
 export const ExpensesContext = createContext({
   expenses: [],
   addExpense: ({ description, amount, date }) => {},
@@ -20,6 +17,8 @@ export const ExpensesContext = createContext({
 
 function expensesReducer(state, action) {
   switch (action.type) {
+    case 'INITIALIZE':
+      return [...action.payload];
     case 'ADD':
       const id = new Date().valueOf() + Math.random().toString();
       return [{ ...action.payload, id: id }, ...state];
@@ -39,28 +38,33 @@ function expensesReducer(state, action) {
 }
 
 function ExpensesContextProvider({ children }) {
-  const [expensesState, dispatch] = useReducer(expensesReducer, DUMMY_EXPENSES);
-  const { isAuthenticated } = useContext(AuthContext);
+  const [expensesState, dispatch] = useReducer(expensesReducer, []);
+  const { isAuthenticated, userDetails } = useContext(AuthContext);
+  const userId = userDetails?._tokenResponse?.localId;
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && userId) {
       const fetchData = async () => {
-        const response = await fetchDataFromFirestore();
+        const expenseData = await fetchDataFromFirestore(userId);
+        dispatch({ type: 'INITIALIZE', payload: expenseData });
       };
       fetchData();
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, userId]);
 
-  function addExpense(expenseData) {
-    dispatch({ type: 'ADD', payload: expenseData });
+  async function addExpense(expenseData) {
+    const addedData = await addExpenseToFirestore({ ...expenseData, userId });
+    addedData && dispatch({ type: 'ADD', payload: addedData });
   }
 
-  function deleteExpense(id) {
-    dispatch({ type: 'DELETE', payload: id });
+  async function deleteExpense(id) {
+    const isDeleted = await deleteExpenseToFirestore(id);
+    isDeleted && dispatch({ type: 'DELETE', payload: id });
   }
 
-  function updateExpense(id, expenseData) {
-    dispatch({ type: 'UPDATE', payload: { id: id, data: expenseData } });
+  async function updateExpense(id, expenseData) {
+    const updatedExpense = await updateExpenseToFirestore(id, expenseData);
+    dispatch({ type: 'UPDATE', payload: { id: id, data: updatedExpense } });
   }
 
   function getExpenseById(id) {
