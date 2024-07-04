@@ -49,7 +49,7 @@ const BottomTabNavigator = () => {
 const MainStackNavigator = ({ navigation, route }) => {
   const routeName = getFocusedRouteNameFromRoute(route) ?? '';
   React.useEffect(() => {
-    const showDrawerIcon = routeName !== '' && routeName !== 'Signup';
+    const showDrawerIcon = routeName !== '' && routeName !== 'Signup' && routeName !== 'Signin';
     navigation.setOptions({
       title: '',
       headerLeft: showDrawerIcon ? undefined : () => null,
