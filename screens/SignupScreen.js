@@ -84,7 +84,7 @@ const SignupScreen = ({ navigation }) => {
         }
       }}
     >
-      {({ handleChange, handleSubmit, values, errors }) => {
+      {({ handleChange, handleSubmit, values, errors, setErrors, touched }) => {
         return (
           <View
             style={{
@@ -121,7 +121,7 @@ const SignupScreen = ({ navigation }) => {
                     backgroundColor: 'white',
                   }}
                 />
-                {errors?.email && (
+                {errors?.email && touched?.email && (
                   <Text
                     style={{
                       color: 'red',
@@ -141,7 +141,7 @@ const SignupScreen = ({ navigation }) => {
                     backgroundColor: 'white',
                   }}
                 />
-                {errors?.password && (
+                {errors?.password && touched?.password && (
                   <Text
                     style={{
                       color: 'red',
@@ -178,7 +178,13 @@ const SignupScreen = ({ navigation }) => {
                   style={{
                     backgroundColor: '#42b72a',
                   }}
-                  onPress={gotToSignInScreen}
+                  onPress={() => {
+                    setErrors({
+                      email: '',
+                      password: '',
+                    });
+                    gotToSignInScreen();
+                  }}
                 >
                   Sign In
                 </Button>

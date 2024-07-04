@@ -43,7 +43,6 @@ function AuthContextProvider({ children }) {
   }
 
   function signOut() {
-    console.log('I am being called');
     dispatch({ type: 'SIGN_OUT' });
   }
 
