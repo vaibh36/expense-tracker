@@ -15,7 +15,7 @@ const SigninScreen = ({ navigation }) => {
   const [isError, setIsError] = React.useState(false);
   const { signInUser } = React.useContext(AuthContext);
 
-  gotToSignUpScreen = () => {
+  const gotToSignUpScreen = () => {
     navigation.navigate('Signup');
   };
 
@@ -41,7 +41,7 @@ const SigninScreen = ({ navigation }) => {
         }
       }}
     >
-      {({ handleChange, handleSubmit, values, errors }) => {
+      {({ handleChange, handleSubmit, values, errors, setErrors, touched }) => {
         return (
           <View
             style={{
@@ -77,7 +77,7 @@ const SigninScreen = ({ navigation }) => {
                     backgroundColor: 'white',
                   }}
                 />
-                {errors?.email && (
+                {errors?.email && touched?.email && (
                   <Text
                     style={{
                       color: 'red',
@@ -97,7 +97,7 @@ const SigninScreen = ({ navigation }) => {
                     backgroundColor: 'white',
                   }}
                 />
-                {errors?.password && (
+                {errors?.password && touched?.password && (
                   <Text
                     style={{
                       color: 'red',
@@ -133,7 +133,13 @@ const SigninScreen = ({ navigation }) => {
                   style={{
                     backgroundColor: '#42b72a',
                   }}
-                  onPress={gotToSignUpScreen}
+                  onPress={() => {
+                    setErrors({
+                      email: '',
+                      password: '',
+                    });
+                    gotToSignUpScreen();
+                  }}
                 >
                   Create new account
                 </Button>
