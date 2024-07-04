@@ -1,4 +1,5 @@
 // Import necessary modules
+import moment from 'moment';
 import { firestoreDB } from './firestore';
 import {
   collection,
@@ -11,17 +12,77 @@ import {
   updateDoc,
   doc,
   deleteDoc,
+  limit,
+  startAfter,
+  orderBy,
+  documentId,
+  getAggregateFromServer,
+  sum,
 } from 'firebase/firestore';
 
 const COLLECTION_NAME = 'Expenses';
 const expensesCollection = collection(firestoreDB, COLLECTION_NAME);
 
-// Example function to fetch data from Firestore
-export const fetchDataFromFirestore = async (userId) => {
-  let expenses = [];
+export const fetchTotalExpenses = async (userId) => {
+  let totalExpense = 0;
 
   try {
-    const snapshot = await getDocs(query(expensesCollection), where('userId', '==', userId));
+    const snapshot = await getAggregateFromServer(
+      query(expensesCollection, where('userId', '==', userId)),
+      {
+        totalExpense: sum('amount'),
+      }
+    );
+
+    totalExpense = snapshot?.data()?.totalExpense || 0;
+  } catch (e) {
+    console.log('Error fetching total expenses', e);
+  }
+
+  return totalExpense;
+};
+
+export const fetchTotalExpensesInLast7Days = async (userId) => {
+  let totalExpense = 0;
+  try {
+    const date = moment().startOf('day').subtract(7, 'days').toDate();
+
+    const snapshot = await getAggregateFromServer(
+      query(
+        expensesCollection,
+        where('userId', '==', userId),
+        where('date', '>=', Timestamp.fromDate(date))
+      ),
+      {
+        totalExpense: sum('amount'),
+      }
+    );
+
+    totalExpense = snapshot?.data()?.totalExpense || 0;
+  } catch (e) {
+    console.log('Error fetching total expenses in last 7 days ', e);
+  }
+
+  return totalExpense;
+};
+
+// Example function to fetch data from Firestore
+export const fetchDataFromFirestore = async (userId, startAfterDoc, pageLimit) => {
+  let expenses = [];
+  try {
+    const expensesQuery = [
+      expensesCollection,
+      where('userId', '==', userId),
+      orderBy('date'),
+      orderBy(documentId()),
+      limit(pageLimit),
+    ];
+
+    if (startAfterDoc) {
+      expensesQuery.push(startAfter(startAfterDoc.date, startAfterDoc.id));
+    }
+
+    const snapshot = await getDocs(query(...expensesQuery));
     snapshot.forEach((doc) => {
       //console.log(doc.id, '=>', doc.data());
       const expenseData = doc.data();
@@ -46,7 +107,7 @@ export const addExpenseToFirestore = async ({ category, userId, date, descriptio
       category: category || '',
       date,
       description,
-      amount,
+      amount: parseFloat(amount),
       date: Timestamp.fromDate(date),
     });
 
