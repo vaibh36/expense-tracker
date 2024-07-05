@@ -15,6 +15,7 @@ import {
   fetchTotalExpensesInLast7Days,
 } from '../utils/expenses';
 import { AuthContext } from './AuthContext';
+import moment from 'moment';
 
 export const ExpensesContext = createContext({
   expenses: [],
@@ -41,10 +42,17 @@ function expensesReducer(state, action) {
       };
     }
     case 'ADD': {
-      const id = new Date().valueOf() + Math.random().toString();
+      const newExpenses = [{ ...action.payload }, ...state.expenses];
+      newExpenses.sort((a, b) => {
+        const dateCmp = moment(a.date).format('x') - moment(b.date).format('x');
+        const idCmp = a.id.localeCompare(b.id);
+
+        return dateCmp || idCmp;
+      });
+
       return {
         ...state,
-        expenses: [{ ...action.payload, id: id }, ...state.expenses],
+        expenses: newExpenses,
       };
     }
     case 'UPDATE': {
@@ -101,32 +109,30 @@ function ExpensesContextProvider({ children }) {
     dispatch({ type: 'SET_TOTAL_EXPENSES_IN_7_DAYS', payload: totalAmount });
   }, [userId]);
 
-  const getExpenses = useCallback(
-    async (page = 1, limit = 10) => {
-      const { expenses } = expensesState;
+  const getExpenses = useCallback(async (page = 1, limit = 10) => {
+    const { expenses } = expensesState;
 
-      if (page > 1 && !expenses[expenses.length - 1]?.id) {
+    if (page > 1 && expenses?.length >= page - 1 * limit && !expenses[expenses.length - 1]?.id) {
+      return false;
+    }
+    const expenseData = await fetchDataFromFirestore(
+      userId,
+      page > 1 ? expenses[expenses.length - 1] : '',
+      limit
+    );
+
+    if (expenseData?.length > 0) {
+      dispatch({ type: 'INITIALIZE', payload: { expenseData, page } });
+      if (expenseData?.length < limit) {
+        setHasMore(false);
         return false;
       }
-      const expenseData = await fetchDataFromFirestore(
-        userId,
-        page > 1 ? expenses[expenses.length - 1] : '',
-        limit
-      );
+    } else {
+      setHasMore(false);
+    }
 
-      if (expenseData?.length > 0) {
-        dispatch({ type: 'INITIALIZE', payload: { expenseData, page } });
-        if (expenseData?.length < limit) {
-          setHasMore(false);
-        }
-      } else {
-        setHasMore(false);
-      }
-
-      return true;
-    },
-    [userId]
-  );
+    return true;
+  }, [userId, expensesState].expenses);
 
   async function addExpense(expenseData) {
     const addedData = await addExpenseToFirestore({ ...expenseData, userId });

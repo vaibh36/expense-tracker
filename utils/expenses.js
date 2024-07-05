@@ -112,7 +112,7 @@ export const addExpenseToFirestore = async ({ category, userId, date, descriptio
     });
 
     const expenseData = await getDoc(docRef).then((response) => response?.data());
-    expense = { ...docRef?.id, ...expenseData, date: expenseData?.date?.toDate() };
+    expense = { id: docRef?.id, ...expenseData, date: expenseData?.date?.toDate() };
   } catch (error) {
     console.error('Error adding data: ', error);
   }
