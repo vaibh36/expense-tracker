@@ -6,12 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 import moment from 'moment';
 
 const HomeScreen = ({ navigation }) => {
-  const { expenses } = useContext(ExpensesContext);
-  const sevenDayAgo = moment().startOf('day').subtract(7, 'days');
-  const totalExpenses = expenses?.reduce((acc, expense) => acc + Number(expense.amount), 0);
-  const sevenDaysExpense = expenses
-    ?.filter((expense) => moment(expense.date) > sevenDayAgo)
-    .reduce((acc, expense) => acc + Number(expense.amount), 0);
+  const { totalExpenses, totalExpensesIn7Days } = useContext(ExpensesContext);
 
   const gotToExpenses = () => {
     navigation.navigate('Expenses');
@@ -45,7 +40,9 @@ const HomeScreen = ({ navigation }) => {
                 </View>
                 <View style={styles.totalMetric}>
                   <Text style={styles.totalMetricTitle}>Last 7 days</Text>
-                  <Text style={styles.totalMetricValue}>INR {sevenDaysExpense?.toFixed(2)}</Text>
+                  <Text style={styles.totalMetricValue}>
+                    INR {totalExpensesIn7Days?.toFixed(2)}
+                  </Text>
                 </View>
               </View>
             </Card.Content>

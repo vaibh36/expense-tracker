@@ -56,7 +56,7 @@ const DrawerContent = ({ navigation }) => {
                     onPress={() => {
                       setOpenLogoffModal(false);
                       signOut();
-                      navigation.navigate('Signup');
+                      navigation.navigate('Signin');
                     }}
                   >
                     <Text style={styles.textStyle}>Yes</Text>
