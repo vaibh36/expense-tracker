@@ -1,15 +1,33 @@
 import React, { useContext } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Button } from 'react-native';
 import { Card, Divider } from 'react-native-paper';
 import { ExpensesContext } from '../context/ExpensesContext';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import moment from 'moment';
+import * as Notifications from 'expo-notifications';
+
+
 
 const HomeScreen = ({ navigation }) => {
   const { totalExpenses, totalExpensesIn7Days } = useContext(ExpensesContext);
 
   const gotToExpenses = () => {
     navigation.navigate('Expenses');
+  };
+
+  const scheduleNotificationHandler = () => {
+    Notifications.scheduleNotificationAsync({
+      content: {
+        title: 'Time to refresh the Expense List',
+        body: 'Refresh',
+        data: {
+          userName: 'Expense Tracker',
+        },
+      },
+      trigger: {
+        seconds: 2,
+      },
+    });
   };
 
   return (
@@ -49,6 +67,7 @@ const HomeScreen = ({ navigation }) => {
           </Card>
         </View>
       </View>
+      <Button title="Schedule Notification" onPress={scheduleNotificationHandler} />
     </View>
   );
 };

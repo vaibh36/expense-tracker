@@ -16,10 +16,19 @@ import SignupScreen from './screens/SignupScreen';
 import SigninScreen from './screens/SigninScreen';
 import AuthContextProvider from './context/AuthContext';
 import AnimatedTabBarIcon from './components/AnimatedTabBarIcon';
+import * as Notifications from 'expo-notifications';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+    shouldShowAlert: true,
+  }),
+});
 
 const BottomTabNavigator = () => {
   return (
