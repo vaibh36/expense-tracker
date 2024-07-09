@@ -12,10 +12,10 @@ import ExpensesContextProvider from './context/ExpensesContext';
 import SplashScreen from './screens/SplashScreen';
 import { MenuProvider } from 'react-native-popup-menu';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import SignupScreen from './screens/SignupScreen';
 import SigninScreen from './screens/SigninScreen';
 import AuthContextProvider from './context/AuthContext';
+import AnimatedTabBarIcon from './components/AnimatedTabBarIcon';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -34,7 +34,7 @@ const BottomTabNavigator = () => {
           } else {
             iconName = 'add';
           }
-          return <Ionicons name={iconName} size={size} color={color} />;
+          return <AnimatedTabBarIcon name={iconName} size={size} color={color} focused={focused} />;
         },
         headerShown: false,
       })}
