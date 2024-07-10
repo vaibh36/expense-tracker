@@ -12,14 +12,23 @@ import ExpensesContextProvider from './context/ExpensesContext';
 import SplashScreen from './screens/SplashScreen';
 import { MenuProvider } from 'react-native-popup-menu';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import SignupScreen from './screens/SignupScreen';
 import SigninScreen from './screens/SigninScreen';
 import AuthContextProvider from './context/AuthContext';
+import AnimatedTabBarIcon from './components/AnimatedTabBarIcon';
+import * as Notifications from 'expo-notifications';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+    shouldShowAlert: true,
+  }),
+});
 
 const BottomTabNavigator = () => {
   return (
@@ -34,7 +43,7 @@ const BottomTabNavigator = () => {
           } else {
             iconName = 'add';
           }
-          return <Ionicons name={iconName} size={size} color={color} />;
+          return <AnimatedTabBarIcon name={iconName} size={size} color={color} focused={focused} />;
         },
         headerShown: false,
       })}

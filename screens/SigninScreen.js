@@ -14,6 +14,7 @@ const SigninScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [isError, setIsError] = React.useState(false);
   const { signInUser } = React.useContext(AuthContext);
+  const [passwordVisible, setPasswordVisible] = React.useState(false);
 
   const gotToSignUpScreen = () => {
     navigation.navigate('Signup');
@@ -87,16 +88,23 @@ const SigninScreen = ({ navigation }) => {
                     {errors?.email}
                   </Text>
                 )}
-                <TextInput
-                  value={values?.password}
-                  onChangeText={handleChange('password')}
-                  name="password"
-                  placeholder="Password"
-                  secureTextEntry
-                  style={{
-                    backgroundColor: 'white',
-                  }}
-                />
+                <View
+                  style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff' }}
+                >
+                  <TextInput
+                    value={values?.password}
+                    onChangeText={handleChange('password')}
+                    name="password"
+                    placeholder="Password"
+                    secureTextEntry={!passwordVisible}
+                    style={{
+                      backgroundColor: 'white',
+                      flex: 1,
+                    }}
+                     right={<TextInput.Icon icon={passwordVisible ? 'eye-off' : 'eye'}  onPress={() => setPasswordVisible(!passwordVisible)} />}
+                  />
+                
+                </View>
                 {errors?.password && touched?.password && (
                   <Text
                     style={{
