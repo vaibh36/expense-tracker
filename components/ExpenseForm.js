@@ -2,7 +2,7 @@
 
 import React, { useContext, useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Pressable } from 'react-native';
-import { Formik, useFormik } from 'formik';
+import { useFormik } from 'formik';
 import * as yup from 'yup';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
@@ -31,7 +31,7 @@ const ExpenseForm = ({ itemId }) => {
   } = useFormik({
     initialValues: { description: '', amount: '', date: new Date() },
     validationSchema,
-    onSubmit: (values, { resetForm }) => {
+    onSubmit: (values) => {
       itemId ? updateExpense(itemId, values) : addExpense(values);
       navigator.navigate('Expenses');
     },
@@ -67,6 +67,7 @@ const ExpenseForm = ({ itemId }) => {
           <Icon name="calendar" size={20} color="#0969da" />
         </View>
       </Pressable>
+      {touched.date && errors.date && <Text style={styles.errorText}>{errors.date}</Text>}
       {showDatePicker && (
         <DateTimePicker
           mode="date"
