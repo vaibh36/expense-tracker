@@ -7,8 +7,8 @@
       [
         "expo-notifications",
         {
-          "color": "#ffffff",
-          "defaultChannel": "default"
+          "icon": "./local/assets/SplashScreen.png",
+          "color": "#ffffff"
         }
       ]
     ]

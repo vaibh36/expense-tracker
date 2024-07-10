@@ -19,6 +19,7 @@ const validationSchema = yup.object().shape({
 const ExpenseForm = ({ itemId }) => {
   const { addExpense, updateExpense, getExpenseById } = useContext(ExpensesContext);
   const navigator = useNavigation();
+  const initialValues = { description: '', amount: '', date: new Date() };
   const {
     handleChange,
     handleBlur,
@@ -29,7 +30,7 @@ const ExpenseForm = ({ itemId }) => {
     touched,
     resetForm,
   } = useFormik({
-    initialValues: { description: '', amount: '', date: new Date() },
+    initialValues,
     validationSchema,
     onSubmit: (values) => {
       itemId ? updateExpense(itemId, values) : addExpense(values);
@@ -40,9 +41,9 @@ const ExpenseForm = ({ itemId }) => {
   const focusCallback = React.useCallback(() => {
     if (itemId) {
       const expense = getExpenseById(itemId);
-      resetForm(expense ? { values: { ...expense } } : null);
+      resetForm(expense ? { values: { ...expense } } : { values: initialValues });
     } else {
-      resetForm();
+      resetForm({ values: initialValues });
     }
 
     return () => {};
@@ -91,7 +92,7 @@ const ExpenseForm = ({ itemId }) => {
         style={styles.input}
         onChangeText={handleChange('amount')}
         onBlur={handleBlur('amount')}
-        value={values.amount}
+        value={values.amount?.toString()}
         placeholder="Amount"
         keyboardType="number-pad"
       />

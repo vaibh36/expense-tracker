@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, SafeAreaView } from 'react-native';
 import HomeScreen from './screens/HomeScreen';
 import { NavigationContainer, getFocusedRouteNameFromRoute } from '@react-navigation/native';
@@ -23,11 +23,13 @@ const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
 
 Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-    shouldShowAlert: true,
-  }),
+  handleNotification: async () => {
+    return {
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+      shouldShowAlert: true,
+    };
+  },
 });
 
 const BottomTabNavigator = () => {
@@ -46,6 +48,13 @@ const BottomTabNavigator = () => {
           return <AnimatedTabBarIcon name={iconName} size={size} color={color} focused={focused} />;
         },
         headerShown: false,
+      })}
+      screenListeners={({ navigation, route }) => ({
+        tabPress: (e) => {
+          // Prevent default action
+          e.preventDefault();
+          navigation.navigate(route.name);
+        },
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
@@ -75,6 +84,29 @@ const MainStackNavigator = ({ navigation, route }) => {
   );
 };
 export default function App() {
+  /*
+  React.useEffect(() => {
+    const subscription1 = Notifications.addNotificationReceivedListener((notification) => {
+      console.log('NOTIFICATION RECEIVED');
+      console.log(notification);
+      const userName = notification.request.content.data.userName;
+      console.log(userName);
+    });
+
+    const subscription2 = Notifications.addNotificationResponseReceivedListener((response) => {
+      console.log('NOTIFICATION RESPONSE RECEIVED');
+      console.log(response);
+      const userName = response.notification.request.content.data.userName;
+      console.log(userName);
+    });
+
+    return () => {
+      subscription1.remove();
+      subscription2.remove();
+    };
+  }, []);
+  */
+
   return (
     <>
       <StatusBar style="auto" />

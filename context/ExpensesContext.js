@@ -16,6 +16,7 @@ import {
 } from '../utils/expenses';
 import { AuthContext } from './AuthContext';
 import moment from 'moment';
+import * as Notifications from 'expo-notifications';
 
 export const ExpensesContext = createContext({
   expenses: [],
@@ -28,6 +29,7 @@ export const ExpensesContext = createContext({
   getExpenseById: (id) => {},
   getTotalExpense: () => {},
   getTotalExpenseInLast7Days: () => {},
+  scheduleNotification: () => {},
 });
 
 function expensesReducer(state, action) {
@@ -99,6 +101,28 @@ function ExpensesContextProvider({ children }) {
     }
   }, [isAuthenticated, userId]);
 
+  const scheduleNotification = useCallback((title, body, delay = 2, data) => {
+    Notifications.scheduleNotificationAsync({
+      content: {
+        title,
+        body,
+        data: {
+          email: userDetails?._tokenResponse?.email,
+          ...data,
+        },
+      },
+      trigger: {
+        seconds: delay,
+      },
+    })
+      .then((notificationId) => {
+        console.log('Scheduled notification with id:', notificationId);
+      })
+      .catch((error) => {
+        console.error('Failed to schedule notification:', error);
+      });
+  }, []);
+
   const getTotalExpense = useCallback(async () => {
     const totalAmount = await fetchTotalExpenses(userId);
     dispatch({ type: 'SET_TOTAL_EXPENSES', payload: totalAmount });
@@ -137,17 +161,34 @@ function ExpensesContextProvider({ children }) {
 
   async function addExpense(expenseData) {
     const addedData = await addExpenseToFirestore({ ...expenseData, userId });
-    addedData && dispatch({ type: 'ADD', payload: addedData });
+    if (addedData) {
+      dispatch({ type: 'ADD', payload: addedData });
+      scheduleNotification(
+        'Expense Added',
+        `New Expense added with title "${addedData.description}".`
+      );
+    }
   }
 
   async function deleteExpense(id) {
     const isDeleted = await deleteExpenseToFirestore(id);
-    isDeleted && dispatch({ type: 'DELETE', payload: id });
+    if (isDeleted) {
+      const toBeDeleted = expensesState?.expenses?.find((expense) => expense.id === id) || {};
+      dispatch({ type: 'DELETE', payload: id });
+      scheduleNotification(
+        'Expense Deleted',
+        `Expense deleted with title "${toBeDeleted.description}".`
+      );
+    }
   }
 
   async function updateExpense(id, expenseData) {
     const updatedExpense = await updateExpenseToFirestore(id, expenseData);
     dispatch({ type: 'UPDATE', payload: { id: id, data: updatedExpense } });
+    scheduleNotification(
+      'Expense updated',
+      `Expense updated with title "${updatedExpense.description}".`
+    );
   }
 
   function getExpenseById(id) {
@@ -163,6 +204,7 @@ function ExpensesContextProvider({ children }) {
     getExpenses,
     hasMore,
     setHasMore,
+    scheduleNotification,
   };
 
   return <ExpensesContext.Provider value={value}>{children}</ExpensesContext.Provider>;
