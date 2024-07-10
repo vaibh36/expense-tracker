@@ -14,6 +14,16 @@ const SignupScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [isError, setIsError] = React.useState(false);
   const [isRegistrationSuccess, setIsRegistrationSuccess] = React.useState(false);
+  const [passwordVisible, setPasswordVisible] = React.useState(false);
+
+  const viewPasswordIcon = () => {
+    return (
+      <TextInput.Icon
+        icon={passwordVisible ? 'eye-off' : 'eye'}
+        onPress={() => setPasswordVisible(!passwordVisible)}
+      />
+    );
+  };
 
   const gotToSignInScreen = () => {
     navigation.navigate('Signin');
@@ -136,10 +146,11 @@ const SignupScreen = ({ navigation }) => {
                   onChangeText={handleChange('password')}
                   name="password"
                   placeholder="Password"
-                  secureTextEntry
+                  secureTextEntry={!passwordVisible}
                   style={{
                     backgroundColor: 'white',
                   }}
+                  right={viewPasswordIcon()}
                 />
                 {errors?.password && touched?.password && (
                   <Text
