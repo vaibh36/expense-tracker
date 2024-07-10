@@ -3,10 +3,7 @@ import { View, Text, StyleSheet, Button } from 'react-native';
 import { Card, Divider } from 'react-native-paper';
 import { ExpensesContext } from '../context/ExpensesContext';
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import moment from 'moment';
 import * as Notifications from 'expo-notifications';
-
-
 
 const HomeScreen = ({ navigation }) => {
   const { totalExpenses, totalExpensesIn7Days } = useContext(ExpensesContext);

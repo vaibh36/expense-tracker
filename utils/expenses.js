@@ -67,7 +67,7 @@ export const fetchTotalExpensesInLast7Days = async (userId) => {
 };
 
 // Example function to fetch data from Firestore
-export const fetchDataFromFirestore = async (userId, startAfterDoc, pageLimit) => {
+export const fetchDataFromFirestore = async (userId, startAfterDoc, pageLimit, filters) => {
   let expenses = [];
   try {
     const expensesQuery = [
@@ -80,6 +80,13 @@ export const fetchDataFromFirestore = async (userId, startAfterDoc, pageLimit) =
 
     if (startAfterDoc) {
       expensesQuery.push(startAfter(startAfterDoc.date, startAfterDoc.id));
+    }
+
+    if (filters) {
+      filters.startDate &&
+        expensesQuery.push(where('date', '>=', Timestamp.fromDate(filters.startDate)));
+      filters.endDate &&
+        expensesQuery.push(where('date', '<=', Timestamp.fromDate(filters.endDate)));
     }
 
     const snapshot = await getDocs(query(...expensesQuery));

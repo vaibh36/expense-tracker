@@ -109,7 +109,7 @@ function ExpensesContextProvider({ children }) {
     dispatch({ type: 'SET_TOTAL_EXPENSES_IN_7_DAYS', payload: totalAmount });
   }, [userId]);
 
-  const getExpenses = useCallback(async (page = 1, limit = 10) => {
+  const getExpenses = useCallback(async (page = 1, limit = 10, filters) => {
     const { expenses } = expensesState;
 
     if (page > 1 && expenses?.length >= page - 1 * limit && !expenses[expenses.length - 1]?.id) {
@@ -118,7 +118,8 @@ function ExpensesContextProvider({ children }) {
     const expenseData = await fetchDataFromFirestore(
       userId,
       page > 1 ? expenses[expenses.length - 1] : '',
-      limit
+      limit,
+      filters
     );
 
     if (expenseData?.length > 0) {

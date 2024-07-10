@@ -20,6 +20,15 @@ const SigninScreen = ({ navigation }) => {
     navigation.navigate('Signup');
   };
 
+  const viewPasswordIcon = () => {
+    return (
+      <TextInput.Icon
+        icon={passwordVisible ? 'eye-off' : 'eye'}
+        onPress={() => setPasswordVisible(!passwordVisible)}
+      />
+    );
+  };
+
   return (
     <Formik
       initialValues={{
@@ -101,9 +110,8 @@ const SigninScreen = ({ navigation }) => {
                       backgroundColor: 'white',
                       flex: 1,
                     }}
-                     right={<TextInput.Icon icon={passwordVisible ? 'eye-off' : 'eye'}  onPress={() => setPasswordVisible(!passwordVisible)} />}
+                    right={viewPasswordIcon()}
                   />
-                
                 </View>
                 {errors?.password && touched?.password && (
                   <Text
