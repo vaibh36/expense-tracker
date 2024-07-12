@@ -17,6 +17,7 @@ import SigninScreen from './screens/SigninScreen';
 import AuthContextProvider from './context/AuthContext';
 import AnimatedTabBarIcon from './components/AnimatedTabBarIcon';
 import * as Notifications from 'expo-notifications';
+import SettingsScreen from './screens/SettingsScreen';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -84,28 +85,7 @@ const MainStackNavigator = ({ navigation, route }) => {
   );
 };
 export default function App() {
-  /*
-  React.useEffect(() => {
-    const subscription1 = Notifications.addNotificationReceivedListener((notification) => {
-      console.log('NOTIFICATION RECEIVED');
-      console.log(notification);
-      const userName = notification.request.content.data.userName;
-      console.log(userName);
-    });
 
-    const subscription2 = Notifications.addNotificationResponseReceivedListener((response) => {
-      console.log('NOTIFICATION RESPONSE RECEIVED');
-      console.log(response);
-      const userName = response.notification.request.content.data.userName;
-      console.log(userName);
-    });
-
-    return () => {
-      subscription1.remove();
-      subscription2.remove();
-    };
-  }, []);
-  */
 
   return (
     <>
@@ -117,6 +97,7 @@ export default function App() {
               <NavigationContainer>
                 <Drawer.Navigator drawerContent={(props) => <DrawerContent {...props} />}>
                   <Drawer.Screen name="Track your Expenses" component={MainStackNavigator} />
+                  <Drawer.Screen name="Settings" component={SettingsScreen} />
                 </Drawer.Navigator>
               </NavigationContainer>
             </SafeAreaView>

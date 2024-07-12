@@ -26,6 +26,11 @@ const DrawerContent = ({ navigation }) => {
             onPress={() => navigation.navigate('Expenses')}
             style={styles.drawerItem}
           />
+            <DrawerItem
+            label="Settings"
+             onPress={() => navigation.navigate('Settings')}
+            style={styles.drawerItem}
+          />
         </View>
 
         <View style={styles.logoutContainer}>
