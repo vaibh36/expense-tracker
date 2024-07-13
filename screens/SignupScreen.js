@@ -8,6 +8,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import useSignupFormValidation from '../hooks/useSignupFormValidation';
 import { ActivityIndicator, MD2Colors } from 'react-native-paper';
 import { createUser } from '../utils/auth';
+import {addUserToFirestore} from '../utils/expenses'
 
 const SignupScreen = ({ navigation }) => {
   const { validationSchema } = useSignupFormValidation();
@@ -86,6 +87,7 @@ const SignupScreen = ({ navigation }) => {
           setIsLoading(true);
           setIsError(false);
           const user = await createUser(values?.email, values?.password);
+          await addUserToFirestore({ userId: user?._tokenResponse?.localId, email: values?.email });
           setIsLoading(false);
           setIsRegistrationSuccess(true);
         } catch (e) {

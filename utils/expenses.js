@@ -22,6 +22,7 @@ import {
 
 const COLLECTION_NAME = 'Expenses';
 const expensesCollection = collection(firestoreDB, COLLECTION_NAME);
+const userCollection =  collection(firestoreDB, "Users");
 
 export const fetchTotalExpenses = async (userId) => {
   let totalExpense = 0;
@@ -159,4 +160,22 @@ export const deleteExpenseToFirestore = async (id) => {
   }
 
   return false;
+};
+
+
+export const addUserToFirestore = async ({ userId, email}) => {
+  let expense;
+  try {
+   await addDoc(userCollection, {
+      userId,
+      expenseCheck: false,
+      email
+    });
+
+   
+  } catch (error) {
+    console.error('Error adding data: ', error);
+  }
+
+
 };
