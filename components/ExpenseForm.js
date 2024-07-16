@@ -9,17 +9,19 @@ import moment from 'moment';
 import { ExpensesContext } from '../context/ExpensesContext';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import RNPickerSelect from 'react-native-picker-select';
 
 const validationSchema = yup.object().shape({
   date: yup.date().required('Date is required'),
   description: yup.string().required('Description is required'),
   amount: yup.number().required('Amount is required').positive('Amount must be positive'),
+  category: yup.string().required('Category is required'),
 });
 
 const ExpenseForm = ({ itemId }) => {
   const { addExpense, updateExpense, getExpenseById } = useContext(ExpensesContext);
   const navigator = useNavigation();
-  const initialValues = { description: '', amount: '', date: new Date() };
+  const initialValues = { description: '', amount: '', date: new Date(), category: '' };
   const {
     handleChange,
     handleBlur,
@@ -38,6 +40,7 @@ const ExpenseForm = ({ itemId }) => {
     },
   });
   const [showDatePicker, setShowDatePicker] = useState(false);
+
   const focusCallback = React.useCallback(() => {
     if (itemId) {
       const expense = getExpenseById(itemId);
@@ -98,6 +101,23 @@ const ExpenseForm = ({ itemId }) => {
       />
       {touched.amount && errors.amount && <Text style={styles.errorText}>{errors.amount}</Text>}
 
+      <RNPickerSelect
+        onValueChange={(value) => {
+          setFieldValue('category', value);
+        }}
+        items={[
+          { label: 'Food', value: 'food' },
+          { label: 'Clothing', value: 'clothing' },
+          { label: 'Gas', value: 'gas' },
+        ]}
+        style={pickerSelectStyles}
+        value={values?.category}
+        placeholder={{ label: 'Select category', value: null }}
+      />
+      {touched.category && errors.category && (
+        <Text style={styles.errorText}>{errors.category}</Text>
+      )}
+
       <Button onPress={handleSubmit} title="Submit" />
     </View>
   );
@@ -127,6 +147,32 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: 'red',
     marginBottom: 10,
+  },
+});
+
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 4,
+    color: 'black',
+    paddingRight: 30,
+  },
+  placeholder: {
+    color: 'black',
+  },
+  inputAndroid: {
+    fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 0.5,
+    borderColor: 'black',
+    borderRadius: 8,
+    color: 'black',
+    paddingRight: 30,
   },
 });
 
