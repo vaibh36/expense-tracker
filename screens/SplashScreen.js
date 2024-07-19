@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { View, Image, StyleSheet } from 'react-native';
 import { AuthContext } from '../context/AuthContext';
+import SpinningCircle from '../components/SpinningCircle'
 
 const SplashScreen = ({ navigation }) => {
   const { isAuthenticated } = useContext(AuthContext);
@@ -10,7 +11,7 @@ const SplashScreen = ({ navigation }) => {
     if (!timeout.current) {
       timeout.current = setTimeout(() => {
         navigation.replace(isAuthenticated ? 'Main' : 'Signin');
-      }, 3000);
+      }, 10000);
     }
 
     () => {
@@ -20,7 +21,7 @@ const SplashScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Image source={require('../assets/images/SplashScreen.png')} style={styles.image} />
+      <SpinningCircle />
     </View>
   );
 };
