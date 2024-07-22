@@ -22,13 +22,13 @@ export const ExpensesContext = createContext({
   expenses: [],
   totalExpenses: 0,
   totalExpensesIn7Days: 0,
-  getExpenses: () => {},
-  addExpense: ({ description, amount, date }) => {},
-  deleteExpense: (id) => {},
-  updateExpense: (id, { description, amount, date }) => {},
+  getExpenses: async () => {},
+  addExpense: async ({ description, amount, date }) => {},
+  deleteExpense: async (id) => {},
+  updateExpense: async (id, { description, amount, date }) => {},
   getExpenseById: (id) => {},
-  getTotalExpense: () => {},
-  getTotalExpenseInLast7Days: () => {},
+  getTotalExpense: async () => {},
+  getTotalExpenseInLast7Days: async () => {},
   scheduleNotification: () => {},
 });
 
@@ -148,12 +148,9 @@ function ExpensesContextProvider({ children }) {
 
     if (expenseData?.length > 0) {
       dispatch({ type: 'INITIALIZE', payload: { expenseData, page } });
-      if (expenseData?.length < limit) {
-        setHasMore(false);
-        return false;
-      }
     } else {
       setHasMore(false);
+      return false;
     }
 
     return true;

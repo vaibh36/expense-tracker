@@ -8,7 +8,9 @@ import {
   Pressable,
   Button,
   Text,
+  TextInput,
 } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -18,17 +20,17 @@ import TotalExpenseCard from '../components/TotalExpenseCard';
 import { ExpensesContext } from '../context/ExpensesContext';
 
 const validationSchema = yup.object().shape({
-  startDate: yup.date().required('Start date is required field'),
+  startDate: yup.date().nullable(),
   endDate: yup
     .date()
-    .required('End date is required field.')
+    .nullable()
     .when('startDate', (startDate, schema) => {
       return (
         startDate?.find((d) => !!d) &&
         schema.min(startDate, 'End date must be greater than start Date.')
       );
-    })
-    .required('End date is required field.'),
+    }),
+  searchText: yup.string().nullable(),
 });
 
 const ExpenseListing = () => {
@@ -37,13 +39,23 @@ const ExpenseListing = () => {
   const [refreshing, setRefreshing] = React.useState(false);
   const [filters, setFilters] = useState(null);
   const { expenses, getExpenses, hasMore, setHasMore } = useContext(ExpensesContext);
-  const { handleSubmit, setFieldValue, values, errors, touched, resetForm } = useFormik({
-    initialValues: { startDate: '', endDate: '' },
+  const {
+    handleSubmit,
+    handleChange,
+    handleBlur,
+    setFieldValue,
+    values,
+    errors,
+    touched,
+    resetForm,
+  } = useFormik({
+    initialValues: { startDate: '', endDate: '', searchText: '' },
     validationSchema,
     onSubmit: (values) => {
       setFilters({
         startDate: values.startDate,
         endDate: values.endDate,
+        searchText: values.searchText,
       });
       onRefresh();
     },
@@ -51,6 +63,14 @@ const ExpenseListing = () => {
 
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+
+  const focusCallback = React.useCallback(() => {
+    handleClear();
+
+    return () => {};
+  }, []);
+
+  useFocusEffect(focusCallback);
 
   useEffect(() => {
     fetchData();
@@ -61,6 +81,7 @@ const ExpenseListing = () => {
 
     setLoading(true);
     const response = await getExpenses(page, 10, filters);
+
     if (response) {
       setPage((prev) => prev + 1);
     }
@@ -80,7 +101,7 @@ const ExpenseListing = () => {
   };
 
   const handleClear = () => {
-    resetForm({ values: { startDate: '', endDate: '' } });
+    resetForm({ values: { startDate: '', endDate: '', searchText: '' } });
     setFilters(null);
     onRefresh();
   };
@@ -153,11 +174,6 @@ const ExpenseListing = () => {
               />
             )}
           </View>
-          {filters?.startDate || filters?.endDate ? (
-            <Button onPress={handleClear} title="Clear" />
-          ) : (
-            <Button onPress={handleSubmit} title="Apply" />
-          )}
         </View>
         {touched.startDate && errors.startDate && (
           <Text style={styles.errorText}>{errors.startDate}</Text>
@@ -165,6 +181,25 @@ const ExpenseListing = () => {
         {(touched.endDate || touched.startDate) && errors.endDate && (
           <Text style={styles.errorText}>{errors.endDate}</Text>
         )}
+        <View>
+          <TextInput
+            style={styles.input}
+            onChangeText={handleChange('searchText')}
+            onBlur={handleBlur('searchText')}
+            value={values.searchText}
+            placeholder="Search"
+          />
+          {touched.searchText && errors.searchText && (
+            <Text style={styles.errorText}>{errors.searchText}</Text>
+          )}
+        </View>
+        <View>
+          {filters?.startDate || filters?.endDate || filters?.searchText ? (
+            <Button onPress={handleClear} title="Clear" />
+          ) : (
+            <Button onPress={handleSubmit} title="Apply" />
+          )}
+        </View>
       </View>
       <FlatList
         data={expenses}
@@ -204,7 +239,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'streach',
     gap: 5,
-    width: '40%',
+    width: '50%',
     marginBottom: 5,
   },
   dateInput: {
