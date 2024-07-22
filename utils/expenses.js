@@ -22,7 +22,7 @@ import {
 
 const COLLECTION_NAME = 'Expenses';
 const expensesCollection = collection(firestoreDB, COLLECTION_NAME);
-const userCollection =  collection(firestoreDB, "Users");
+const userCollection = collection(firestoreDB, 'Users');
 
 export const fetchTotalExpenses = async (userId) => {
   let totalExpense = 0;
@@ -94,11 +94,22 @@ export const fetchDataFromFirestore = async (userId, startAfterDoc, pageLimit, f
     snapshot.forEach((doc) => {
       //console.log(doc.id, '=>', doc.data());
       const expenseData = doc.data();
-      expenses.push({
-        id: doc.id,
-        ...expenseData,
-        date: expenseData?.date?.toDate(),
-      });
+      let filterMatched = true;
+
+      if (filters?.searchText) {
+        const searchText = filters?.searchText?.toLowerCase();
+        filterMatched =
+          expenseData.description?.toLowerCase().includes(searchText) ||
+          expenseData.category.toLowerCase().includes(searchText) ||
+          expenseData.amount.toString().toLowerCase().includes(searchText);
+      }
+
+      filterMatched &&
+        expenses.push({
+          id: doc.id,
+          ...expenseData,
+          date: expenseData?.date?.toDate(),
+        });
     });
   } catch (error) {
     console.error('Error fetching data: ', error);
@@ -162,20 +173,15 @@ export const deleteExpenseToFirestore = async (id) => {
   return false;
 };
 
-
-export const addUserToFirestore = async ({ userId, email}) => {
+export const addUserToFirestore = async ({ userId, email }) => {
   let expense;
   try {
-   await addDoc(userCollection, {
+    await addDoc(userCollection, {
       userId,
       expenseCheck: false,
-      email
+      email,
     });
-
-   
   } catch (error) {
     console.error('Error adding data: ', error);
   }
-
-
 };

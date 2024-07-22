@@ -1,7 +1,15 @@
 // ExpenseForm.js
 
 import React, { useContext, useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Pressable } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  Pressable,
+  ActivityIndicator,
+} from 'react-native';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -19,6 +27,7 @@ const validationSchema = yup.object().shape({
 });
 
 const ExpenseForm = ({ itemId }) => {
+  const [loading, setLoading] = useState(false);
   const { addExpense, updateExpense, getExpenseById } = useContext(ExpensesContext);
   const navigator = useNavigation();
   const initialValues = { description: '', amount: '', date: new Date(), category: '' };
@@ -34,8 +43,10 @@ const ExpenseForm = ({ itemId }) => {
   } = useFormik({
     initialValues,
     validationSchema,
-    onSubmit: (values) => {
-      itemId ? updateExpense(itemId, values) : addExpense(values);
+    onSubmit: async (values) => {
+      setLoading(true);
+      itemId ? await updateExpense(itemId, values) : await addExpense(values);
+      setLoading(false);
       navigator.navigate('Expenses');
     },
   });
@@ -118,7 +129,14 @@ const ExpenseForm = ({ itemId }) => {
         <Text style={styles.errorText}>{errors.category}</Text>
       )}
 
-      <Button onPress={handleSubmit} title="Submit" />
+      {loading ? (
+        <View style={styles.loading}>
+          <ActivityIndicator color={'#fff'} />
+          <Text style={styles.loadingText}>Submitting...</Text>
+        </View>
+      ) : (
+        <Button onPress={handleSubmit} title="Submit" />
+      )}
     </View>
   );
 };
@@ -141,12 +159,25 @@ const styles = StyleSheet.create({
     borderColor: '#BEBEBE',
     borderWidth: 1,
     marginBottom: 2,
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
   },
   errorText: {
     fontSize: 12,
     color: 'red',
     marginBottom: 10,
+  },
+  loading: {
+    flexDirection: 'row',
+    gap: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#307ecc',
+    height: 40,
+  },
+  loadingText: {
+    color: 'white',
+    fontWeight: '600',
+    textTransform: 'capitalize',
   },
 });
 
@@ -156,20 +187,28 @@ const pickerSelectStyles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 10,
     borderWidth: 1,
-    borderColor: 'gray',
     borderRadius: 4,
     color: 'black',
     paddingRight: 30,
+    borderColor: '#BEBEBE',
+  },
+  viewContainer: {
+    borderWidth: 1,
+    borderRadius: 4,
+    borderColor: '#BEBEBE',
+    marginBottom: 10,
+    height: 40,
+    justifyContent: 'center',
   },
   placeholder: {
-    color: 'black',
+    color: '#BEBEBE',
   },
   inputAndroid: {
     fontSize: 16,
     paddingHorizontal: 10,
     paddingVertical: 8,
     borderWidth: 0.5,
-    borderColor: 'black',
+    borderColor: '#BEBEBE',
     borderRadius: 8,
     color: 'black',
     paddingRight: 30,
