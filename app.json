@@ -1,13 +1,14 @@
 {
   "expo": {
-    "name": "new-expense-tracker",
+    "name": "Great Expense Tracker",
     "slug": "new-expense-tracker",
-    "version": "1.0.0",
+    "runtimeVersion": "1.0.0",
+    "version": "1.0.1",
     "plugins": [
       [
         "expo-notifications",
         {
-          "icon": "./local/assets/SplashScreen.png",
+          "icon": "./assets/images/expense.png",
           "color": "#ffffff"
         }
       ]
@@ -17,6 +18,22 @@
         "projectId": "6d3ec67e-c5fe-429c-9117-01f6520a2603"
       }
     },
-    "owner": "trackerapp269"
+    "owner": "trackerapp269",
+    "updates": {
+      "url": "https://u.expo.dev/6d3ec67e-c5fe-429c-9117-01f6520a2603"
+    },
+    "android": {
+      "package": "com.newexpensetracker",
+      "versionCode": 2
+    },
+    "ios": {}
+  },
+  "icon": "./assets/images/expense.png",
+  "ios": {
+    "buildNumber": "1.0.1"
+  },
+  "android": {
+    "versionCode": 2,
+    "versionName": "1.0.1"
   }
 }
