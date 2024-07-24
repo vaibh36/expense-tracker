@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "expense-tracker",
-    "slug": "expense-tracker",
+    "name": "new-expense-tracker",
+    "slug": "new-expense-tracker",
     "version": "1.0.0",
     "plugins": [
       [
@@ -14,8 +14,9 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "2ea63a18-fbf6-4d12-8ae6-6df459be77ef"
+        "projectId": "6d3ec67e-c5fe-429c-9117-01f6520a2603"
       }
-    }
+    },
+    "owner": "trackerapp269"
   }
 }
