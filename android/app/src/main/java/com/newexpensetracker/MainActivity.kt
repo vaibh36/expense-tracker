@@ -1,4 +1,4 @@
-package com.expensetracker
+package com.newexpensetracker
 
 import android.os.Build
 import android.os.Bundle
